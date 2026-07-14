@@ -32,19 +32,25 @@ Return ONLY a valid JSON object matching this exact structure:
 {
     "is_event": true or false,
     "title": "Title of the event (or null if missing)",
-    "start_time": "Start time in English (or null if missing)",
-    "end_time": "End time in English (or null if missing)",
+    "start_time": "Start time STRICTLY in ISO 8601 format e.g., 'YYYY-MM-DDTHH:MM:SS' (or null if missing)",
+    "end_time": "End time STRICTLY in ISO 8601 format e.g., 'YYYY-MM-DDTHH:MM:SS' (or null if missing)",
     "location": "Location or meeting link (or null if missing)"
 }
 '''
 
+        import datetime
+        now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S (%A)")
+
         prompt = f"""
-Analyze the following message from {platform}. 
+Analyze the following message from {platform} (Sender ID: {sender_id}).
+The current date and time is: {now_str}.
 Determine if this message contains a concrete schedule, meeting, event, or appointment.
+
 CRITICAL RULES:
 1. DO NOT invent, hallucinate, or guess any details.
 2. If a detail (like location or end time) is NOT explicitly mentioned in the text, you MUST set it to null.
 3. If the message is just a general statement and not a calendar event, set "is_event" to false.
+4. Use the current date and time provided above to accurately calculate the EXACT date. Output all times strictly in ISO 8601 format based on the current date.
 
 {schema_instruction}
 

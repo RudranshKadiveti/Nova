@@ -182,6 +182,8 @@ class CalendarManager:
             new_event = Event(
                 sender_id=sender_id,
                 title=title,
+                start_time=dt_start,
+                end_time=dt_end,
                 location=location,
                 status="synced" if self.service else "pending_sync"
             )
